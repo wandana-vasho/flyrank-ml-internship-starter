@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Position, Not Proof: What 3.6M Search Rows Say About Content Priority — Wandana Vasho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#13161b;
+    --paper:#eeece6;
+    --paper-dim:#e2e0d8;
+    --line:#c9c6ba;
+    --flag:#c8912f;
+    --flag-soft:#e7d3a8;
+    --teal:#3f6a68;
+    --muted:#6b6a63;
+    --serif:'Source Serif 4', Georgia, serif;
+    --sans:'Inter', -apple-system, sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--flag);color:var(--ink);}
+
+  a{color:var(--flag-soft);}
+  a:hover{color:var(--flag);}
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
+
+  .hero{
+    padding:120px 0 80px;
+    border-bottom:1px solid #2a2e35;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--flag);
+    margin-bottom:28px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;height:1px;background:var(--flag);
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(2.1rem,5vw,3.4rem);
+    line-height:1.08;
+    margin:0 0 22px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--flag-soft);
+    font-weight:500;
+  }
+  .subtitle{
+    font-size:1.15rem;
+    color:#b8b6ad;
+    max-width:640px;
+    margin-bottom:40px;
+  }
+  .byline{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    border-top:1px solid #2a2e35;
+    padding-top:22px;
+  }
+  .byline span b{color:var(--paper);font-weight:500;}
+
+  .ladder{
+    display:flex;
+    align-items:flex-end;
+    gap:3px;
+    height:64px;
+    margin:44px 0 8px;
+  }
+  .ladder i{
+    display:block;
+    width:6px;
+    background:#33383f;
+    border-radius:1px 1px 0 0;
+  }
+  .ladder i.hi{background:var(--flag);}
+  .ladder-caption{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.04em;
+  }
+
+  nav.toc{
+    padding:36px 0;
+    border-bottom:1px solid #2a2e35;
+  }
+  .toc-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px 24px;
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  .toc-grid a{
+    color:#b8b6ad;
+    text-decoration:none;
+    display:flex;
+    gap:10px;
+  }
+  .toc-grid a:hover{color:var(--flag-soft);}
+  .toc-grid .n{color:var(--muted);}
+
+  section{
+    padding:64px 0;
+    border-bottom:1px solid #2a2e35;
+  }
+  section:last-of-type{border-bottom:none;}
+  .sec-label{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--flag);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.9rem;
+    margin:0 0 26px;
+    letter-spacing:-0.01em;
+  }
+  h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.25rem;
+    margin:34px 0 14px;
+  }
+  p{margin:0 0 18px;color:#d6d4cb;max-width:70ch;}
+  .lede{font-size:1.08rem;color:var(--paper);}
+  ul, ol{margin:0 0 20px;padding-left:22px;color:#d6d4cb;}
+  li{margin-bottom:8px;max-width:66ch;}
+  strong{color:var(--paper);font-weight:600;}
+  code, .mono{font-family:var(--mono);}
+
+  .abstract{
+    background:#181b21;
+    border:1px solid #2a2e35;
+    border-left:3px solid var(--flag);
+    padding:26px 30px;
+    margin-bottom:8px;
+  }
+  .abstract p{margin:0;color:#cfcdc4;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:20px 0 8px;
+    font-family:var(--mono);
+    font-size:13.5px;
+  }
+  th{
+    text-align:left;
+    font-weight:500;
+    color:var(--flag);
+    padding:10px 14px;
+    border-bottom:1px solid var(--flag);
+    text-transform:uppercase;
+    font-size:11px;
+    letter-spacing:0.05em;
+  }
+  td{
+    padding:11px 14px;
+    border-bottom:1px solid #2a2e35;
+    color:#d6d4cb;
+  }
+  tr:last-child td{border-bottom:1px solid #2a2e35;}
+  .num{color:var(--paper);}
+  .hl-row td{background:rgba(200,145,47,0.08);}
+
+  .callout{
+    background:#181b21;
+    border:1px solid #2a2e35;
+    padding:20px 24px;
+    margin:24px 0;
+    border-radius:2px;
+  }
+  .callout .tag{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--teal);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:8px;
+    display:block;
+  }
+  .callout.warn{border-left:3px solid var(--flag);}
+  .callout.warn .tag{color:var(--flag);}
+
+  .archetypes{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:28px 0;
+  }
+  .arch-card{
+    background:#181b21;
+    border:1px solid #2a2e35;
+    padding:20px;
+  }
+  .arch-card .n{
+    font-family:var(--mono);
+    font-size:1.7rem;
+    color:var(--flag-soft);
+    display:block;
+    margin-bottom:6px;
+  }
+  .arch-card .label{
+    font-family:var(--mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .arch-card p{font-size:13.5px;margin:0;}
+
+  .metric-row{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    margin:28px 0;
+  }
+  .metric{font-family:var(--mono);}
+  .metric .v{font-size:1.8rem;color:var(--flag-soft);display:block;}
+  .metric .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+
+  .repro-list{
+    display:grid;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  .repro-list a{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-bottom:1px solid #2a2e35;
+    text-decoration:none;
+    color:#b8b6ad;
+  }
+  .repro-list a:hover{color:var(--flag-soft);}
+  .repro-list .path{color:var(--paper);}
+
+  footer{
+    padding:56px 0 80px;
+    text-align:center;
+  }
+  .credit{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.8;
+  }
+  .credit a{color:var(--flag-soft);}
+
+  @media (max-width:640px){
+    .hero{padding:70px 0 50px;}
+    .toc-grid{grid-template-columns:1fr;}
+    .archetypes{grid-template-columns:1fr;}
+    .metric-row{gap:24px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap hero">
+  <div class="eyebrow">FlyRank ML Internship — Capstone Research Paper</div>
+  <h1>Position, Not Proof:<br><em>What 3.6 Million Search Rows Say</em><br>About Content Priority</h1>
+  <p class="subtitle">A page's rank predicts its clicks — but the honest version of that story includes a baseline that cheated, a model that generalizes without knowing why, and a queue of 735,691 pages that still need a human to look at them.</p>
+
+  <div class="ladder" aria-hidden="true">
+    <i style="height:58%"></i><i style="height:71%" class="hi"></i><i style="height:44%"></i>
+    <i style="height:80%" class="hi"></i><i style="height:35%"></i><i style="height:62%"></i>
+    <i style="height:28%"></i><i style="height:90%" class="hi"></i><i style="height:20%"></i>
+    <i style="height:50%"></i><i style="height:15%"></i><i style="height:66%" class="hi"></i>
+    <i style="height:12%"></i><i style="height:40%"></i><i style="height:8%"></i>
+    <i style="height:54%" class="hi"></i><i style="height:18%"></i><i style="height:33%"></i>
+    <i style="height:10%"></i><i style="height:24%"></i>
+  </div>
+  <div class="ladder-caption">EACH BAR = ONE PAGE, ORDERED BY SEARCH POSITION · HIGHLIGHTED = FLAGGED FOR REVIEW</div>
+
+  <div class="byline">
+    <span><b>Wandana Vasho</b></span>
+    <span>Backend AI Engineering Intern, FlyRank</span>
+    <span>Machine Learning Track</span>
+    <span>July 2026</span>
+  </div>
+</div>
+
+<nav class="toc wrap">
+  <div class="toc-grid">
+    <a href="#abstract"><span class="n">00</span> Abstract</a>
+    <a href="#question"><span class="n">01</span> Question</a>
+    <a href="#data"><span class="n">02</span> Data</a>
+    <a href="#method"><span class="n">03</span> Methodology</a>
+    <a href="#results"><span class="n">04</span> Results</a>
+    <a href="#limits"><span class="n">05</span> Limitations</a>
+    <a href="#recs"><span class="n">06</span> Recommendations</a>
+    <a href="#repro"><span class="n">07</span> Reproducibility</a>
+    <a href="#credit"><span class="n">08</span> Acknowledgments</a>
+  </div>
+</nav>
+
+<section id="abstract">
+  <div class="wrap">
+    <div class="sec-label">00 — Abstract</div>
+    <div class="abstract">
+      <p><strong>Question:</strong> does a page's average search ranking position predict its click-through rate strongly enough to prioritize a content-review queue? <strong>Method:</strong> a hand-coded baseline rule and a grouped-validation Decision Tree / Logistic Regression pair were trained on 3.6M+ page-day rows from FlyRank's production search warehouse (month=2026-03), split by client to prevent identity leakage, and audited twice for label leakage. <strong>Result:</strong> the baseline scored higher on raw metrics (f1=0.994 vs. 0.818) — but only because it shared its formula with the label itself; once that coupling was named, the honest trained model (f1=0.818, precision=0.978) stood on its own using only position and volume, no same-day CTR required. The output is a three-tier, 735,691-row action playbook with explicit human-review rules and no automated changes.</p>
+    </div>
+  </div>
+</section>
+
+<section id="question">
+  <div class="wrap">
+    <div class="sec-label">01 — Question</div>
+    <h2>The decision this work is for</h2>
+    <p class="lede">A content team cannot manually review hundreds of thousands of pages. Something has to narrow the list — the question is whether that something should be a simple rule, or something learned.</p>
+    <p>Does a page's average ranking position meaningfully predict its click-through rate, and can that relationship be used to prioritize which pages a content team reviews first? This question traces across the full track: from an early correlation check on a small sample, through a full data contract on the real warehouse, to a validated model and a deployable playbook.</p>
+    <div class="callout">
+      <span class="tag">Decision supported</span>
+      Which pages a content/SEO team should prioritize reviewing or rewriting first, out of a page catalog too large to review manually.
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <div class="sec-label">02 — Data</div>
+    <h2>What this is built on</h2>
+    <p>FlyRank's <span class="mono">internship-warehouse</span> release (Hugging Face, gated), table <span class="mono">fact_content_daily_performance</span>, month <span class="mono">2026-03</span> — a mid-panel month, deliberately not the sealed final month reserved as a test period.</p>
+
+    <div class="metric-row">
+      <div class="metric"><span class="v">9,841,378</span><span class="k">total page-day rows, month=2026-03</span></div>
+      <div class="metric"><span class="v">3,611,061</span><span class="k">rows with usable GSC data (37%)</span></div>
+      <div class="metric"><span class="v">104</span><span class="k">pseudonymized clients in the release</span></div>
+    </div>
+
+    <h3>Grain</h3>
+    <p>One row = one page, on one day, for one client. Verified directly: total rows and unique (client, content, date) combinations matched exactly, with zero duplicates.</p>
+
+    <h3>Filtering</h3>
+    <p>Restricted to rows where <span class="mono">gsc_data_available IS TRUE</span> and <span class="mono">gsc_impressions &gt; 0</span>. A minimum-impression floor of 50 was applied for the final action playbook, to exclude statistically unreliable low-volume rows from the priority queue.</p>
+
+    <h3>Excluded, deliberately</h3>
+    <ul>
+      <li><span class="mono">fact_content_query_90d</span> — a different grain (query-level), kept separate from this page-day analysis.</li>
+      <li>AI-referral columns and GA4-derived metrics — inconsistent coverage across clients, would bias toward GA4-enabled accounts only.</li>
+      <li>Raw client/content hash identifiers as model features — kept only as row identifiers, never as predictive inputs, to avoid the model memorizing specific clients.</li>
+    </ul>
+
+    <div class="callout warn">
+      <span class="tag">Public-safe by construction</span>
+      All client and content identifiers arrive pre-hashed from FlyRank. No real client names, domains, URLs, or search queries appear anywhere in this paper or its underlying notebooks.
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <div class="sec-label">03 — Methodology</div>
+    <h2>Label, features, and how the split was chosen</h2>
+
+    <h3>Label</h3>
+    <p><span class="mono">underperforming</span> = actual CTR below the expected CTR for the page's position tier, where expected CTR was measured directly from the warehouse: <strong>0.0039</strong> for positions 1–10, <strong>0.0018</strong> beyond position 10.</p>
+
+    <h3>Features</h3>
+    <p>Two, deliberately minimal: <span class="mono">log_impressions</span> (log-transformed impression volume) and <span class="mono">avg_position</span> (mean search ranking position). Both are same-day, point-in-time GSC metrics — available at the moment a decision would actually be made, with no dependency on future data.</p>
+
+    <h3>Baseline</h3>
+    <p>A hand-coded rule scoring each page by the same CTR-position gap used in the label, carrying a single reason code (<span class="mono">CTR_BELOW_EXPECTED_FOR_POSITION</span>) and a binary action label.</p>
+
+    <h3>Model</h3>
+    <p>A Decision Tree Classifier (max depth 4, balanced class weights), compared against Logistic Regression as a calibration check.</p>
+
+    <h3>Validation design</h3>
+    <p>Grouped by client (<span class="mono">GroupShuffleSplit</span>): 37 clients in training, 10 held out for test, <strong>zero client overlap</strong> confirmed directly. This was chosen specifically because per-client data history varies widely in this release — a random row-level split risks letting the model memorize individual clients rather than learn a pattern that generalizes.</p>
+
+    <h3>Leakage checks</h3>
+    <p>Run twice. First, a feature-vector audit tested the final feature set against label-derived and circular columns. Second, a follow-up validation pass deliberately re-added the label-derived column to confirm the size of the resulting inflation: <strong>+0.182 f1</strong>, before removing it and keeping only the honest, leak-free result.</p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="sec-label">04 — Results</div>
+    <h2>The honest table</h2>
+    <p class="lede">The baseline wins on paper. That is the finding worth explaining, not hiding.</p>
+
+    <table>
+      <thead>
+        <tr><th>Method</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+      </thead>
+      <tbody>
+        <tr class="hl-row"><td>Baseline (rule-based)</td><td class="num">1.000</td><td class="num">0.989</td><td class="num">0.994</td></tr>
+        <tr><td>Decision Tree (grouped split)</td><td class="num">0.978</td><td class="num">0.703</td><td class="num">0.818</td></tr>
+        <tr><td>Logistic Regression (grouped split)</td><td class="num">0.979</td><td class="num">0.699</td><td class="num">0.816</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <span class="tag">Why the baseline "wins"</span>
+      The baseline score and the label were built from the same underlying comparison — CTR against a position-tier expectation — at slightly different thresholds. It is closer to restating the label than predicting it. A fair benchmark would use a fixed rule that does not share its formula with the label.
+    </div>
+
+    <h3>What the trained model actually offers</h3>
+    <p>Both models reach ~0.98 precision using only <span class="mono">log_impressions</span> and <span class="mono">avg_position</span> — without ever seeing same-day CTR. That distinction matters whenever CTR for the decision period is not yet known, which the baseline's formula quietly assumes away.</p>
+
+    <h3>Feature importance</h3>
+    <p><span class="mono">log_impressions</span> accounted for <strong>96.2%</strong> of the Decision Tree's splits; <span class="mono">avg_position</span> only <strong>3.8%</strong> — despite position being the more theoretically motivated signal throughout this work. The likely explanation: low-impression pages produce noisier, more extreme CTR values by construction (a single click on 3 impressions swings CTR wildly), so the model may be leaning on volume as a proxy for measurement reliability rather than position capturing the true effect directly.</p>
+
+    <h3>A validation check, reported honestly</h3>
+    <p>Re-running the same model under a naive, non-grouped random split produced f1=0.836 — only <strong>0.018 higher</strong> than the grouped-by-client result (f1=0.818). Grouped validation remains the methodologically correct choice, but the gap here was smaller than expected, likely because the two features used are generic page-level signals rather than client-specific ones.</p>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="wrap">
+    <div class="sec-label">05 — Limitations</div>
+    <h2>What this cannot claim</h2>
+    <ol>
+      <li><strong>Single-month snapshot.</strong> Built on 2026-03 only; seasonal or campaign-driven CTR shifts are not captured.</li>
+      <li><strong>Baseline-label coupling.</strong> As shown in Results, the baseline is not an independent benchmark for this task.</li>
+      <li><strong>Unbalanced client history.</strong> Clients in this release have very different data start dates; any pattern found may be shaped disproportionately by longer-history clients.</li>
+      <li><strong>Client concentration in early findings.</strong> An earlier top-20 review found 15 of 20 highest-priority rows belonged to a single client — plausibly real, plausibly a client-specific tracking anomaly. Not resolved here.</li>
+      <li><strong>Observational, not causal.</strong> Position and CTR are measured together, not manipulated. Title quality, brand recognition, and query intent likely contribute alongside position.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="recs">
+  <div class="wrap">
+    <div class="sec-label">06 — Ranked Recommendations</div>
+    <h2>The action playbook</h2>
+    <p>Every flagged page is sorted into one of three archetypes, combining position, CTR gap, and impression volume into a single, auditable action:</p>
+
+    <div class="archetypes">
+      <div class="arch-card">
+        <span class="n">132,093</span>
+        <div class="label">High Value Miss</div>
+        <p>Top-10 position, real gap, 200+ impressions. <strong>Action:</strong> urgent title/meta review.</p>
+      </div>
+      <div class="arch-card">
+        <span class="n">352,264</span>
+        <div class="label">Quick Win Candidate</div>
+        <p>Top-10 position, real gap, lower volume. <strong>Action:</strong> title/meta review, standard priority.</p>
+      </div>
+      <div class="arch-card">
+        <span class="n">251,334</span>
+        <div class="label">Low Priority Gap</div>
+        <p>Beyond position 10, underperforming. <strong>Action:</strong> monitor — ranking needs work before content does.</p>
+      </div>
+    </div>
+
+    <h3>What should not be automated</h3>
+    <ul>
+      <li>No automatic title/meta rewriting — every change needs a human draft.</li>
+      <li>No automatic publishing or client-facing alerts without review first.</li>
+      <li>No bulk action on a client-concentrated cluster without checking for a tracking anomaly.</li>
+    </ul>
+
+    <h3>Monitoring</h3>
+    <p>Re-run monthly, not more often — CTR needs volume to stabilize. If recomputed position-tier benchmarks drift more than ~20% from the values used here, thresholds should be recalculated rather than reused as-is.</p>
+  </div>
+</section>
+
+<section id="repro">
+  <div class="wrap">
+    <div class="sec-label">07 — Reproducibility</div>
+    <h2>Every step, in order</h2>
+    <p>Each stage of this paper traces to an executed notebook in the project repository.</p>
+    <div class="repro-list">
+      <a href="../work/notebooks/w01_research_question.ipynb">Research question &amp; provisional lane <span class="path">w01_research_question.ipynb</span></a>
+      <a href="../work/notebooks/w02_ml_task_framing.ipynb">ML task framing <span class="path">w02_ml_task_framing.ipynb</span></a>
+      <a href="../work/notebooks/w03_data_contract.ipynb">Data contract &amp; leakage trap <span class="path">w03_data_contract.ipynb</span></a>
+      <a href="../work/notebooks/w03_feature_leakage_check.ipynb">Feature vector &amp; leakage hunt <span class="path">w03_feature_leakage_check.ipynb</span></a>
+      <a href="../work/notebooks/w04_baseline_score.ipynb">Baseline score &amp; top-20 review <span class="path">w04_baseline_score.ipynb</span></a>
+      <a href="../work/notebooks/w04_signal_audit.ipynb">Signal audit <span class="path">w04_signal_audit.ipynb</span></a>
+      <a href="../work/notebooks/w05_model.ipynb">Model vs. baseline <span class="path">w05_model.ipynb</span></a>
+      <a href="../work/notebooks/w06_validation_audit.ipynb">Validation &amp; claim audit <span class="path">w06_validation_audit.ipynb</span></a>
+      <a href="../work/notebooks/w07_action_playbook.ipynb">Action playbook <span class="path">w07_action_playbook.ipynb</span></a>
+      <a href="../work/notebooks/capstone.ipynb">This paper's source notebook <span class="path">capstone.ipynb</span></a>
+    </div>
+  </div>
+</section>
+
+<footer id="credit">
+  <div class="wrap">
+    <p class="credit">
+      Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a><br>
+      All client and content identifiers are pseudonymized at source. No private data appears in this paper or its supporting notebooks.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
